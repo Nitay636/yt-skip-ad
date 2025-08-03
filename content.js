@@ -5,7 +5,6 @@ function checkForAd(videoAd) {
     videoAd.offsetParent !== null && // element is not `display: none`
     videoAd.getBoundingClientRect().height > 0 // element takes up space
   ) {
-    console.log("Ad is visible");
     return true;
   }
   return false;
@@ -21,9 +20,8 @@ function skipAd() {
     videoAd.offsetParent !== null && // element is not `display: none`
     videoAd.getBoundingClientRect().height > 0 // element takes up space
   ) {
-    console.log("Ad detected, skipped 10 seconds");
-    if (videoContainer.currentTime < 10) {
-      videoContainer.currentTime = 10;
+    if (videoContainer.currentTime < 30) {
+      videoContainer.currentTime += 30; // Skip 30 seconds, enough for even ads which very long with no skip button
     }
     videoContainer.pause();
   }
@@ -55,16 +53,14 @@ function enlargeSkipButton() {
 }
 
 function startObserver() {
-  console.log("startObserver() called");
   if (location.hostname === "www.youtube.com") {
     let throttleTimeout;
     const throttleDelay = 100; // 100 ms
     const observer = new MutationObserver((mutations) => {
-      console.log("Mutation detected");
       if (throttleTimeout) return; // Skip if already waiting
       throttleTimeout = window.setTimeout(() => {
         throttleTimeout = null;
-        console.log("Processing mutations");
+
         for (const mutation of mutations) {
           if (mutation.type === "childList") {
             const videoAd = document.querySelector(".video-ads");
@@ -73,7 +69,6 @@ function startObserver() {
               if (enlargeSkipButton()) {
               }
             } else if (!checkForAd(videoAd)) {
-              console.log("Ad no longer detected");
             }
           }
         }
