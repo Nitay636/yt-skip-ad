@@ -1,11 +1,4 @@
-function ad() {
-  const videoContainer = document.querySelector(".video-stream");
-
-  console.log("Ad detected, skipping...");
-  if (videoContainer) {
-    videoContainer.currentTime += 10; // Skip 10 seconds
-  }
-}
+let adHandlingInProgress = false;
 
 function adExists() {
   const videoAd = document.querySelector(".video-ads");
@@ -14,14 +7,22 @@ function adExists() {
 }
 
 function checkAndSkipAdOnce() {
+  if (adHandlingInProgress) return;
+  adHandlingInProgress = true;
+
   const videoContainer = document.querySelector(".video-stream");
 
   const interval = setInterval(() => {
     const videoAd = document.querySelector(".video-ads");
-    if (videoAd) {
-      console.log("Ad detected, skipping 10 seconds");
+    if (
+      videoAd &&
+      videoAd.offsetParent !== null && // element is not `display: none`
+      videoAd.getBoundingClientRect().height > 0 // element takes up space
+    ) {
+      console.log("Ad detected, skipped 10 seconds");
       videoContainer.currentTime += 10;
       clearInterval(interval);
+      adHandlingInProgress = false;
 
       // Let user press the enlarged skip button manually
       const skipButton =
@@ -42,14 +43,14 @@ function checkAndSkipAdOnce() {
       }
     } else {
       clearInterval(interval);
+      adHandlingInProgress = false;
     }
   }, 100);
 }
 
 if (location.hostname === "www.youtube.com") {
-  console.log("Inside youtube website");
-
   setInterval(() => {
+    console.log("Checking for ads...");
     if (adExists()) {
       checkAndSkipAdOnce();
     }
