@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Skip Ad Expander",
+  "version": "1.0",
+  "description": "Expands the YouTube skip button to fill the player.",
+  "permissions": ["scripting"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon.png"
+  }
+}
