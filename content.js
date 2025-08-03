@@ -58,7 +58,7 @@ function startObserver() {
   console.log("startObserver() called");
   if (location.hostname === "www.youtube.com") {
     let throttleTimeout;
-    const throttleDelay = 70; // 70 ms
+    const throttleDelay = 100; // 100 ms
     const observer = new MutationObserver((mutations) => {
       console.log("Mutation detected");
       if (throttleTimeout) return; // Skip if already waiting
